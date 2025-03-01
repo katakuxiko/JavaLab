@@ -2,6 +2,7 @@ package com.example.springrest.controller;
 
 import com.example.springrest.dto.LoginRequest;
 import com.example.springrest.dto.RegisterRequest;
+import com.example.springrest.entity.Role;
 import com.example.springrest.service.JwtService;
 import com.example.springrest.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        userService.registerUser(request.getUsername(), request.getPassword());
+        userService.registerUser(request.getUsername(), request.getPassword(), Role.USER);
         return ResponseEntity.ok("Пользователь зарегистрирован");
     }
+
 }
