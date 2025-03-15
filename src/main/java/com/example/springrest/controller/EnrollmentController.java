@@ -8,6 +8,7 @@ import com.example.springrest.service.CourseService;
 import com.example.springrest.service.EnrollmentService;
 import com.example.springrest.service.StudentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,14 @@ public class EnrollmentController {
     }
 
     // ✅ Получить все зачисления
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @GetMapping
     public List<Enrollment> getAllEnrollments() {
         return enrollmentService.getAllEnrollments();
     }
 
-    // ✅ Получить зачисление по ID
+    // Получить зачисление по ID
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @GetMapping("/{id}")
     public ResponseEntity<Enrollment> getEnrollmentById(@PathVariable Long id) {
         return enrollmentService.getEnrollmentById(id)
@@ -42,6 +45,7 @@ public class EnrollmentController {
     }
 
     // ✅ Создать зачисление (POST)
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PostMapping
     public ResponseEntity<Enrollment> createEnrollment(@RequestBody EnrollmentRequest request) {
             Optional<Student> student = studentService.getStudentById(request.getStudentId());
@@ -61,7 +65,7 @@ public class EnrollmentController {
             }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PutMapping("/{id}")
     public ResponseEntity<Enrollment> updateEnrollment(
             @PathVariable Long id,
@@ -90,6 +94,7 @@ public class EnrollmentController {
 
 
     // ✅ Частичное обновление (PATCH)
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PatchMapping("/{id}")
     public ResponseEntity<Enrollment> partialUpdateEnrollment(
             @PathVariable Long id,
@@ -118,11 +123,18 @@ public class EnrollmentController {
 
 
     // ✅ Удалить зачисление
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEnrollment(@PathVariable Long id) {
         if (enrollmentService.deleteEnrollment(id)) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("hasRole('STUDENT')")
+    public List<Enrollment> getMyEnrollments() {
+        return enrollmentService.getEnrollmentsForCurrentUser();
     }
 }

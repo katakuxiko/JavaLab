@@ -42,7 +42,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        userService.registerUser(request.getUsername(), request.getPassword(), Role.USER);
+        userService.registerUser(request.getUsername(), request.getPassword(), Role.STUDENT);
         return ResponseEntity.ok("Пользователь зарегистрирован");
     }
 

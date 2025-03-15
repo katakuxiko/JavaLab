@@ -9,6 +9,10 @@ import java.util.List;
 @Table(name = "students")
 public class Student {
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

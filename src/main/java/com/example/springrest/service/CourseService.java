@@ -3,6 +3,7 @@ package com.example.springrest.service;
 import com.example.springrest.entity.Course;
 import com.example.springrest.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public Course updateCourse(Long id, Course updatedCourse) {
         return courseRepository.findById(id).map(course -> {
             course.setName(updatedCourse.getName());
@@ -34,6 +36,7 @@ public class CourseService {
         }).orElseThrow(() -> new RuntimeException("Course not found"));
     }
 
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public Course patchCourse(Long id, Course updatedFields) {
         return courseRepository.findById(id).map(course -> {
             Integer newCredits = updatedFields.getCredits();
@@ -46,6 +49,7 @@ public class CourseService {
         }).orElseThrow(() -> new RuntimeException("Course not found"));
     }
 
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public void deleteCourse(Long id) {
         if (courseRepository.existsById(id)) {
             courseRepository.deleteById(id);

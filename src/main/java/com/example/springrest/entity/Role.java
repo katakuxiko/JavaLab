@@ -1,6 +1,7 @@
 package com.example.springrest.entity;
 
 public enum Role {
-    USER,
+    STUDENT,
+    TEACHER,
     ADMIN
 }
