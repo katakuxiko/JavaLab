@@ -8,17 +8,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 @Service
 public class CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public Page<Course> getAllCourses(Pageable pageable) {
+        return courseRepository.findAll(pageable);
     }
-
     public Optional<Course> getCourseById(Long id) {
         return courseRepository.findById(id);
     }

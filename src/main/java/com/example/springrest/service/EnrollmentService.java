@@ -6,6 +6,8 @@ import com.example.springrest.entity.User;
 import com.example.springrest.repository.EnrollmentRepository;
 import com.example.springrest.repository.StudentRepository;
 import com.example.springrest.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -36,8 +38,8 @@ public class EnrollmentService {
     }
 
     // ✅ Получить все записи о зачислениях
-    public List<Enrollment> getAllEnrollments() {
-        return enrollmentRepository.findAll();
+    public Page<Enrollment> getAllEnrollments(Pageable pageable) {
+        return enrollmentRepository.findAll(pageable);
     }
 
     // ✅ Получить запись о зачислении по ID

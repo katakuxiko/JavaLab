@@ -3,6 +3,9 @@ package com.example.springrest.controller;
 import com.example.springrest.entity.Student;
 import com.example.springrest.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +21,10 @@ public class StudentsController {
 
         @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
-    }
+        public ResponseEntity<Page<Student>> getAllStudents(Pageable pageable) {
+            Page<Student> students = studentService.getAllStudents(pageable);
+            return ResponseEntity.ok(students);
+        }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @GetMapping("/{id}")

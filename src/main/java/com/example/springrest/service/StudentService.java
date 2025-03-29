@@ -1,8 +1,11 @@
 package com.example.springrest.service;
 
+import com.example.springrest.entity.Enrollment;
 import com.example.springrest.entity.Student;
 import com.example.springrest.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +19,8 @@ public class StudentService {
     private StudentRepository studentRepository;
 
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public Page<Student> getAllStudents(Pageable pageable) {
+        return studentRepository.findAll(pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -3,8 +3,10 @@ package com.example.springrest.controller;
 import com.example.springrest.entity.Course;
 import com.example.springrest.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,8 +18,9 @@ public class CoursesController {
     private CourseService courseService;
 
     @GetMapping
-    public List<Course> getAllCourses() {
-        return courseService.getAllCourses();
+    public ResponseEntity<Page<Course>> getAllCourses(Pageable pageable) {
+        Page<Course> courses = courseService.getAllCourses(pageable);
+        return ResponseEntity.ok(courses);
     }
 
     @GetMapping("/{id}")

@@ -7,6 +7,8 @@ import com.example.springrest.entity.Student;
 import com.example.springrest.service.CourseService;
 import com.example.springrest.service.EnrollmentService;
 import com.example.springrest.service.StudentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +33,9 @@ public class EnrollmentController {
     // ✅ Получить все зачисления
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @GetMapping
-    public List<Enrollment> getAllEnrollments() {
-        return enrollmentService.getAllEnrollments();
+    public ResponseEntity<Page<Enrollment>> getAllEnrollments(Pageable pageable) {
+        Page<Enrollment> enrollments = enrollmentService.getAllEnrollments(pageable);
+        return ResponseEntity.ok(enrollments);
     }
 
     // Получить зачисление по ID
