@@ -27,4 +27,10 @@ public class StudentSpecification {
         return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("dob"), dobTo);
     }
 
+    // Фильтрация по id курса
+    public static Specification<Student> hasCourse(Long courseId) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.join("enrollments").get("course").get("id"), courseId);
+    }
+
 }

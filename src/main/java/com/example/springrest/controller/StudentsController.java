@@ -22,14 +22,14 @@ public class StudentsController {
     @Autowired
     private StudentService studentService;
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
-    @GetMapping
-        public ResponseEntity<Page<Student>> getAllStudents(Pageable pageable) {
-            Page<Student> students = studentService.getAllStudents(pageable);
-            return ResponseEntity.ok(students);
-    }
+//    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+//    @GetMapping
+//        public ResponseEntity<Page<Student>> getAllStudents(Pageable pageable) {
+//            Page<Student> students = studentService.getAllStudents(pageable);
+//            return ResponseEntity.ok(students);
+//    }
 
-    @GetMapping("/filters")
+    @GetMapping
     public Page<Student> filterStudents(
             @RequestParam(required = false) String name,
             @RequestParam(required = false, name = "name_like") String nameLike,
@@ -42,9 +42,11 @@ public class StudentsController {
             @DateTimeFormat(pattern = "dd.MM.yyyy")
             @Schema(type = "string", example = "15.03.2024")
             Date dobTo,
+            @RequestParam(required = false) Long courseId,
+
             Pageable pageable
     ) {
-        return studentService.getStudentsWithFilter(name, nameLike, email,dobFrom, dobTo, pageable);
+        return studentService.getStudentsWithFilter(name, nameLike, email,dobFrom, dobTo, courseId, pageable);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")

@@ -69,7 +69,7 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Page<Student> getStudentsWithFilter(String name, String nameLike, String email, Date dobFrom, Date dobTo, Pageable pageable) {
+    public Page<Student> getStudentsWithFilter(String name, String nameLike, String email, Date dobFrom, Date dobTo, Long courseId, Pageable pageable) {
         Specification<Student> spec = Specification.where(null);
 
         if (name != null) {
@@ -86,6 +86,9 @@ public class StudentService {
         }
         if (dobTo != null) {
             spec = spec.and(StudentSpecification.hasDobBefore(dobTo));
+        }
+        if (courseId != null) {
+            spec = spec.and(StudentSpecification.hasCourse(courseId));
         }
 
         return studentRepository.findAll(spec, pageable);
