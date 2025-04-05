@@ -1,5 +1,6 @@
 package com.example.springrest.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Date;
@@ -20,6 +21,7 @@ public class Student {
     private String firstName;
     private String lastName;
     private String email;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private Date dob;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)

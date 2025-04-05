@@ -1,15 +1,16 @@
 package com.example.springrest.service;
 
-import com.example.springrest.entity.Enrollment;
 import com.example.springrest.entity.Student;
 import com.example.springrest.repository.StudentRepository;
+import com.example.springrest.specification.StudentSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -66,5 +67,27 @@ public class StudentService {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
+    }
+
+    public Page<Student> getStudentsWithFilter(String name, String nameLike, String email, Date dobFrom, Date dobTo, Pageable pageable) {
+        Specification<Student> spec = Specification.where(null);
+
+        if (name != null) {
+            spec = spec.and(StudentSpecification.hasName(name));
+        }
+        if (nameLike != null) {
+            spec = spec.and(StudentSpecification.nameLike(nameLike));
+        }
+        if (email != null) {
+            spec = spec.and(StudentSpecification.hasEmail(email));
+        }
+        if (dobFrom != null) {
+            spec = spec.and(StudentSpecification.hasDobAfter(dobFrom));
+        }
+        if (dobTo != null) {
+            spec = spec.and(StudentSpecification.hasDobBefore(dobTo));
+        }
+
+        return studentRepository.findAll(spec, pageable);
     }
 }
