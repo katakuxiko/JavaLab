@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,18 +25,20 @@ public class EnrollmentService {
     private final UserService userService;
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
 
     public EnrollmentService(
             EnrollmentRepository enrollmentRepository,
             UserRepository userRepository,
             UserService userService, UserService userService1,
-            StudentRepository studentRepository
+            StudentRepository studentRepository, EmailService emailService
     ) {
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.userService = userService1;
         this.studentRepository = studentRepository;
+        this.emailService = emailService;
     }
 
     // ✅ Получить все записи о зачислениях
@@ -49,7 +53,18 @@ public class EnrollmentService {
 
     // ✅ Создать новую запись о зачислении
     public Enrollment createEnrollment(Enrollment enrollment) {
-        return enrollmentRepository.save(enrollment);
+        Enrollment saved = enrollmentRepository.save(enrollment);
+
+        Student student = saved.getStudent();
+        if (student != null && student.getEmail() != null) {
+            String studentName = student.getFirstName() + " " + student.getLastName();
+            String courseTitle = saved.getCourse().getName(); // предполагается, что у Course есть getTitle()
+            LocalDate enrollmentDate = saved.getEnrollmentDate();
+
+            emailService.sendEnrollmentNotification(student.getEmail(), studentName, courseTitle, enrollmentDate);
+        }
+
+        return saved;
     }
 
     // ✅ Обновить запись о зачислении (PUT)

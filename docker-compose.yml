@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Сервис для PostgreSQL
+  db:
+    image: postgres:15.0-alpine
+    container_name: blog-postgres
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123123
+    ports:
+      - "5433:5432"  # Открываем порт 5433 на хосте для подключения к базе данных
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Данные PostgreSQL сохраняются в volume
+    networks:
+      - blog-network
+
+  # Сервис для Spring Boot приложения
+  springboot-app:
+    build: .
+    container_name: blog-springboot-app
+    environment:
+      SPRING_APPLICATION_NAME: springRest
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/testdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 123123
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+      SPRING_DATA_WEB_PAGEABLE_ONE_INDEXED_PARAMETERS: true
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: katakuxiko@gmail.com
+      SPRING_MAIL_PASSWORD: gepo bstk quwo kmfk
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
+    ports:
+      - "8080:8080"  # Открываем порт 8080 для доступа к приложению
+    depends_on:
+      - db  # Указываем, что контейнер с приложением зависит от базы данных
+    networks:
+      - blog-network
+
+# Определяем сеть для взаимодействия между сервисами
+networks:
+  blog-network:
+    driver: bridge
+
+# Определяем volume для сохранения данных PostgreSQL
+volumes:
+  db_data:
+    driver: local
